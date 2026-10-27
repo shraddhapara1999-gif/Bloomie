@@ -1,0 +1,10 @@
+{
+  "name": "Bloomie",
+  "short_name": "Bloomie",
+  "description": "A gentle companion for mood check-ins, meditation, journaling and calm.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#cce0d8",
+  "theme_color": "#cce0d8",
+  "icons": [{ "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}

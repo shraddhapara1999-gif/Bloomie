@@ -1,0 +1,152 @@
+@import "tailwindcss";
+
+/* Bloomie design tokens — taken from the Figma Make design.
+   `primary-strong`, `muted-foreground` and the CTA gradient are slightly darker
+   than the original so text meets WCAG AA contrast. */
+:root {
+  --background: #cce0d8;
+  --foreground: #1e3a35;
+  --card: #ffffff;
+  --card-foreground: #2c4a44;
+  --primary: #5b9fac;
+  --primary-strong: #3b7a87;
+  --primary-foreground: #ffffff;
+  --secondary: #a8cfc7;
+  --secondary-foreground: #1e3a35;
+  --muted: #e8f2ef;
+  --muted-foreground: #4d716b;
+  --accent: #e8a090;
+  --accent-strong: #a8503e;
+  --accent-foreground: #ffffff;
+  --border: #d0e8e2;
+  --ring: #3b7a87;
+  --leaf: #6aad6e;
+  --danger: #b4423a;
+  --radius: 1rem;
+  --cta-gradient: linear-gradient(135deg, #3b7a87, #47824c);
+  --shadow-card: 0 2px 12px rgba(30, 58, 53, 0.06);
+  --shadow-glass: 0 8px 32px rgba(91, 159, 172, 0.12);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-strong: var(--primary-strong);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-strong: var(--accent-strong);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+  --color-leaf: var(--leaf);
+  --color-danger: var(--danger);
+  --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Nunito", ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    min-height: 100dvh;
+  }
+  h1, h2, h3, h4, .font-display {
+    font-family: var(--font-display);
+  }
+  :focus-visible {
+    outline: 3px solid var(--ring);
+    outline-offset: 2px;
+    border-radius: 0.5rem;
+  }
+  button:not(:disabled), [role="button"], label[for], select {
+    cursor: pointer;
+  }
+  ::selection {
+    background: var(--secondary);
+  }
+}
+
+input[type="range"] {
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 9999px;
+  background: var(--secondary);
+}
+input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--primary-strong);
+  box-shadow: 0 2px 6px rgba(91, 159, 172, 0.4);
+  cursor: pointer;
+}
+input[type="range"]::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: 50%;
+  background: var(--primary-strong);
+  cursor: pointer;
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow: var(--shadow-glass);
+}
+
+.skeleton {
+  background: linear-gradient(90deg, var(--muted) 25%, #f4f9f7 50%, var(--muted) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.4s ease-in-out infinite;
+}
+@keyframes shimmer {
+  from { background-position: 200% 0; }
+  to { background-position: -200% 0; }
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+.animate-fade-up {
+  animation: fade-up 0.35s ease-out both;
+}
+
+.sr-only-focusable:not(:focus) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Horizontal chip rows scroll by touch/trackpad without a visible scrollbar. */
+.overflow-x-auto {
+  scrollbar-width: none;
+}
+.overflow-x-auto::-webkit-scrollbar {
+  display: none;
+}
