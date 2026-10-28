@@ -19,8 +19,12 @@ if exist "supabase\.cron-secret" (
 )
 > "supabase\.cron-secret" echo %CRON_SECRET%
 
-call npx supabase secrets set "APP_URL=%APP_URL%" "ALLOWED_ORIGINS=%APP_URL%" "CRON_SECRET=%CRON_SECRET%" || exit /b 1
+rem Always allow local development alongside the given app URL.
+set "ORIGINS=%APP_URL%"
+if /i not "%APP_URL%"=="http://localhost:5173" set "ORIGINS=%APP_URL%,http://localhost:5173"
+
+call npx supabase secrets set "APP_URL=%APP_URL%" "ALLOWED_ORIGINS=%ORIGINS%" "CRON_SECRET=%CRON_SECRET%" || exit /b 1
 
 echo.
-echo Functions deployed. APP_URL and ALLOWED_ORIGINS set to %APP_URL%.
+echo Functions deployed. APP_URL=%APP_URL%  ALLOWED_ORIGINS=%ORIGINS%
 echo The cron secret is saved in supabase\.cron-secret (git-ignored) for the scheduler setup.
