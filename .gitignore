@@ -31,3 +31,4 @@ dist-ssr
 supabase/.temp/
 supabase/.branches/
 coverage/
+supabase/.cron-secret

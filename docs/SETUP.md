@@ -44,6 +44,10 @@ See [SUPABASE.md](SUPABASE.md) for the data model, RLS and admin roles.
 
 ## 3. Edge Functions
 
+On Windows, `scripts\deploy-functions.cmd [app-url]` does all of the below in one go: it deploys the four functions without Docker (`--use-api`), generates a cron secret (saved to the git-ignored `supabase/.cron-secret`) and sets `APP_URL`, `ALLOWED_ORIGINS` and `CRON_SECRET`. Re-run it with your production URL after deploying to Vercel.
+
+Manual equivalent:
+
 ```bash
 npx supabase functions deploy delete-account
 npx supabase functions deploy send-reminders --no-verify-jwt
