@@ -4,7 +4,9 @@ import { configStatus } from './env'
 // `null` when the app is not configured — the UI shows a setup screen instead.
 export const supabase: SupabaseClient | null = configStatus.config
   ? createClient(configStatus.config.supabaseUrl, configStatus.config.supabaseAnonKey, {
-      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, flowType: 'pkce' },
+      // Implicit flow: email verification and password-reset links work in any
+      // browser or device, not only the one where the email was requested.
+      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, flowType: 'implicit' },
     })
   : null
 

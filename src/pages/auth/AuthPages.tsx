@@ -15,7 +15,12 @@ function authErrorMessage(e: { message?: string; status?: number; code?: string 
   if (/invalid login credentials/i.test(m)) return 'That email and password do not match. Please try again.'
   if (/email not confirmed/i.test(m)) return 'Please confirm your email first — check your inbox for the verification link.'
   if (/already registered|already exists/i.test(m)) return 'An account with this email already exists. Try signing in instead.'
-  if (/rate limit|too many/i.test(m) || e?.status === 429) return 'Too many attempts. Please wait a minute and try again.'
+  // Supabase's built-in email sender allows only a few emails per hour per project.
+  if (e?.code === 'over_email_send_rate_limit' || /email rate limit/i.test(m)) {
+    return 'We have sent too many emails in the last hour. Please wait a while before requesting another email, or check your inbox for one we already sent.'
+  }
+  if (/for security purposes|after \d+ seconds/i.test(m)) return 'Please wait a minute before requesting another email.'
+  if (/rate limit|too many/i.test(m) || e?.status === 429) return 'Too many sign-in attempts from this network. Please wait a few minutes and try again.'
   if (/weak|pwned/i.test(m)) return 'Please choose a stronger password that has not appeared in a data breach.'
   if (/fetch|network/i.test(m)) return 'We could not reach the server. Check your connection and try again.'
   return m || 'Something went wrong. Please try again.'
@@ -247,9 +252,13 @@ export function ResetPasswordPage() {
   const [loading, setLoading] = useState(false)
 
   if (!authLoading && !session) {
+    const hash = new URLSearchParams(window.location.hash.slice(1))
+    const query = new URLSearchParams(window.location.search)
+    const reason = (hash.get('error_description') || query.get('error_description') || '').replace(/\+/g, ' ')
     return (
       <AuthLayout title="Link expired" footer={<Link to="/forgot-password" className="font-bold text-primary-strong hover:underline">Request a new link</Link>}>
-        <p className="text-sm text-center">This password reset link is invalid or has expired. Please request a new one.</p>
+        <p className="text-sm text-center">This password reset link is invalid, has expired, or was already used. Please request a new one — links work once and expire after an hour.</p>
+        {reason && <p className="text-xs text-center text-muted-foreground mt-2">Details: {reason}</p>}
       </AuthLayout>
     )
   }

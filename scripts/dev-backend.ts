@@ -85,9 +85,20 @@ const findUserByEmail = async (email: string) => (await db.query<DbUser>(`select
 const findUserById = async (id: string) => (await db.query<DbUser>(`select * from auth.users where id = $1`, [id])).rows[0]
 
 async function sendLink(kind: 'signup' | 'recovery', u: DbUser, redirectTo: string, challenge?: string) {
-  const code = randomUUID()
-  await db.query(`insert into auth.dev_tokens (token, kind, user_id, data) values ($1, $2, $3, $4)`, [code, kind, u.id, JSON.stringify({ challenge: challenge ?? null })])
-  const link = `${redirectTo}${redirectTo.includes('?') ? '&' : '?'}code=${code}`
+  let link: string
+  if (challenge) {
+    // PKCE flow: the client exchanges ?code= for a session.
+    const code = randomUUID()
+    await db.query(`insert into auth.dev_tokens (token, kind, user_id, data) values ($1, $2, $3, $4)`, [code, kind, u.id, JSON.stringify({ challenge })])
+    link = `${redirectTo}${redirectTo.includes('?') ? '&' : '?'}code=${code}`
+  } else {
+    // Implicit flow: the session is delivered in the URL fragment, like GoTrue's verify redirect.
+    // The email is treated as confirmed when the link is created (dev-only simplification).
+    if (kind === 'signup') await db.query(`update auth.users set email_confirmed_at = coalesce(email_confirmed_at, now()) where id = $1`, [u.id])
+    const s = await issueSession((await findUserById(u.id))!)
+    const frag = new URLSearchParams({ access_token: s.access_token, refresh_token: s.refresh_token, expires_in: String(s.expires_in), expires_at: String(s.expires_at), token_type: 'bearer', type: kind })
+    link = `${redirectTo}#${frag}`
+  }
   const mail = { to: u.email, subject: kind === 'signup' ? 'Confirm your Bloomie account' : 'Reset your Bloomie password', link, at: new Date().toISOString() }
   mailbox.unshift(mail)
   console.log(`\n✉️  [dev mailbox] ${mail.subject} → ${mail.to}\n    ${link}\n`)
