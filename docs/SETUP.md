@@ -72,7 +72,14 @@ Then schedule the sender: open the SQL editor and run [`supabase/cron.sql`](../s
 Delivery results appear in the app under **Reminders → Delivery history**. Without credentials, deliveries are recorded as *skipped* with the reason — never as sent. Quiet hours, the email opt-in and unsubscribe links are honoured server-side.
 
 ### Optional AI: Talk to Bloomie & journal prompts
-Create `supabase/.env.secrets` (git-ignored) containing `ANTHROPIC_API_KEY=sk-ant-...`, then run `npx supabase secrets set --env-file supabase/.env.secrets`. The companion chat (`ai-companion` function) uses `claude-opus-5-5` with server-side refusal fallbacks, streams replies, saves history to `companion_messages` (owner-only RLS), adds crisis guidance when risk language is detected, and limits each user to `COMPANION_DAILY_LIMIT` messages per 24 h (default 50). Users must opt in under **Settings → Optional AI features** (consent dialog). Only focus areas and recent feeling tags are sent — never journal text. Without the key, the button returns a clear "not configured" message.
+Bloomie uses **Google Gemini** for the optional AI features. Keys from Google AI Studio (`AIza…`) use the Gemini API; newer Google Cloud keys (`AQ.…`) use the Vertex AI endpoint — the function picks the right one automatically (override with `GEMINI_ENDPOINT=gemini-api|vertex`, model with `GEMINI_MODEL`, default `gemini-flash-latest`).
+
+1. Put the key in `supabase/.env.secrets` (git-ignored): `GEMINI_API_KEY=...`
+2. `npx supabase secrets set --env-file supabase/.env.secrets`
+
+> **Privacy:** on Google's free Gemini tier, prompts and responses may be used to improve Google's products and may be reviewed by people. For real users' conversations, use a key from a Google project **with billing enabled** and review Google's data-use terms.
+
+The chat (`ai-companion`) streams replies, saves history to `companion_messages` (owner-only RLS), adds crisis guidance when risk language is detected, falls back to a supportive message if Google's safety filters block a reply, and limits each user to `COMPANION_DAILY_LIMIT` messages per 24 h (default 50).
 
 ## 4. Deploy the frontend to Vercel
 

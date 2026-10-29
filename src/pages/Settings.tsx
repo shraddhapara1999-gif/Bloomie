@@ -120,7 +120,7 @@ function AiSection() {
           footer={<><Button variant="soft" onClick={() => setOpen(false)}>Not now</Button>
             <Button loading={update.isPending} onClick={() => update.mutate({ ai_opt_in: true, ai_opt_in_at: new Date().toISOString() }, { onSuccess: () => { setOpen(false); toast.success('AI features enabled') } })}>I understand, turn on</Button></>}>
           <ul className="list-disc pl-5 space-y-1.5">
-            <li><strong>Talk to Bloomie:</strong> messages you type in the chat are sent through our server to our AI provider (Anthropic) to create replies, and the conversation is saved privately to your account (you can delete it any time).</li>
+            <li><strong>Talk to Bloomie:</strong> messages you type in the chat are sent through our server to our AI provider (Google Gemini) to create replies, and the conversation is saved privately to your account (you can delete it any time).</li>
             <li><strong>AI journal prompts:</strong> only your focus areas and the feelings from your latest check-in are sent.</li>
             <li><strong>Your journal entries and check-in notes are never sent.</strong></li>
             <li>The AI is not a therapist and does not diagnose or give medical advice. Responses may be imperfect.</li>

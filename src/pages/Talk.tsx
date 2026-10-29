@@ -38,7 +38,7 @@ function Consent() {
           <p className="font-bold flex items-center gap-2"><ShieldCheck className="size-4 text-primary-strong" aria-hidden /> Before you start</p>
           <ul className="list-disc pl-5 space-y-1.5">
             <li>Bloomie is an <strong>AI</strong>, not a therapist, doctor or crisis service. It can't diagnose or give medical advice, and it can make mistakes.</li>
-            <li>Your messages are sent securely through our server to our AI provider (Anthropic) to create replies. Your journal and check-ins are <strong>not</strong> shared.</li>
+            <li>Your messages are sent securely through our server to our AI provider (Google Gemini) to create replies. Your journal and check-ins are <strong>not</strong> shared.</li>
             <li>Your conversation is saved privately to your account so Bloomie remembers the chat. You can delete it any time.</li>
             <li>If you're in danger or thinking of harming yourself, please call <a href="tel:112" className="underline font-semibold">112</a> or Tele-MANAS on <a href="tel:14416" className="underline font-semibold">14416</a>.</li>
           </ul>

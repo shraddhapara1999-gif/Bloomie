@@ -13,7 +13,7 @@ Built from the **Bloomie** Figma Make design (mint/teal palette, Nunito + Outfit
 | Frontend | React 19 + TypeScript, Vite, Tailwind CSS v4, React Router, TanStack Query, Zod, Recharts |
 | Backend | Supabase — PostgreSQL with Row Level Security, Auth, Edge Functions (Deno) |
 | Notifications | In-app browser notifications, Web Push (VAPID), email (Resend) via a scheduled Edge Function |
-| Optional AI | Consent-gated journal prompts via Claude (`claude-opus-5-5`), server-side only |
+| Optional AI | Consent-gated "Talk to Bloomie" chat and journal prompts via Google Gemini, server-side only |
 | Hosting | Vercel (frontend) + Supabase (backend) |
 
 ## Quick start (local, no Docker needed)
@@ -69,7 +69,7 @@ docs/              Setup, Supabase, deployment and launch checklist
 - Full check-in from the Figma design (Mind → Body → Habits → summary) saved to the database
 - Meditation library (16 original sessions; search, category, duration 2/5/10/15/20, favourites, recent) and player (timer, animated breathing guide, timed guidance, pause/resume/restart/end, generated ambient sound, optional spoken guidance, lock-screen controls, history saving)
 - 9 interactive exercises with steps, timers, gentler-pace option, stop-if-uncomfortable, reflection and history
-- **Talk to Bloomie**: opt-in AI companion chat (Claude, server-side only) with streaming replies, safety rules, crisis detection and helplines, private deletable history, and a daily message limit
+- **Talk to Bloomie**: opt-in AI companion chat (Google Gemini, server-side only) with streaming replies, safety rules, crisis detection and helplines, private deletable history, and a daily message limit
 - Private journal: create/edit/delete, prompts, types, tags, date, link to a check-in, full-text search, filters, calendar, pagination, Markdown/CSV export, unsaved-changes guard
 - Reminders: create/edit/enable/disable/delete, days and times, timezone-aware, quiet hours, channels, delivery history
 - Progress: 7/30/90-day mood & energy, meditation minutes (daily/weekly), sessions, journal frequency, exercises, mood distribution, top feelings, streaks, period-over-period comparison, CSV export, accessible chart tables
@@ -87,7 +87,7 @@ docs/              Setup, Supabase, deployment and launch checklist
 | Scheduled delivery | Deploy `send-reminders` + run `supabase/cron.sql` |
 | Account deletion | Deploy `delete-account` function |
 | Google sign-in | Google OAuth client configured in Supabase, then `VITE_ENABLE_GOOGLE_AUTH=true` |
-| Talk to Bloomie + AI journal prompts (optional) | `ANTHROPIC_API_KEY` function secret; users must opt in |
+| Talk to Bloomie + AI journal prompts (optional) | `GEMINI_API_KEY` function secret (Google, billing-enabled project); users must opt in |
 
 When these are missing the app says so (e.g. "push not configured", deliveries logged as *skipped*) instead of pretending.
 

@@ -30,5 +30,5 @@ Tick each item for the production environment. Bloomie should not be described a
 
 ## Optional
 - [ ] Google sign-in
-- [ ] AI journal prompts (`ANTHROPIC_API_KEY`), with consent copy reviewed
+- [ ] AI features (`GEMINI_API_KEY` from a billing-enabled Google project), with consent copy reviewed
 - [ ] Admin content tooling
