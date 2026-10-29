@@ -1,25 +1,8 @@
-// On-device detection of language that may indicate someone is at risk.
-// Text is checked locally and never sent anywhere. This is a gentle prompt to
+// On-device detection of language that may indicate someone is at risk (shared
+// with the AI companion function). Journal text is checked locally only. This is a gentle prompt to
 // reach out for support — not an assessment, and never the only safeguard.
 
-const PATTERNS: RegExp[] = [
-  /\b(kill|hurt|harm|cut)\s+(my\s*self|myself)\b/i,
-  /\bsuicid(e|al)\b/i,
-  /\b(end|take)\s+(my|my own)\s+life\b/i,
-  /\bwant\s+to\s+die\b/i,
-  /\b(don'?t|do not)\s+want\s+to\s+(live|be alive|be here|exist)\b/i,
-  /\bno\s+reason\s+to\s+live\b/i,
-  /\bbetter\s+off\s+(dead|without\s+me)\b/i,
-  /\bself[-\s]?harm/i,
-  /\bwish\s+i\s+(was|were)\s+(dead|gone|never born)\b/i,
-  /\bcan'?t\s+go\s+on\b/i,
-  /\boverdose\b/i,
-]
-
-export function mayIndicateCrisis(text: string | null | undefined): boolean {
-  if (!text) return false
-  return PATTERNS.some(p => p.test(text))
-}
+export { mayIndicateCrisis } from '../../supabase/functions/_shared/crisis'
 
 export interface Helpline {
   name: string

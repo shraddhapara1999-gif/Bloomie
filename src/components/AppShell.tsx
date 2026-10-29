@@ -1,5 +1,5 @@
 import { NavLink, Outlet, Link, useLocation } from 'react-router'
-import { BarChart3, BookHeart, Flower2, Home, LifeBuoy, Settings, Sparkles } from 'lucide-react'
+import { BarChart3, BookHeart, Flower2, Home, LifeBuoy, MessageCircleHeart, Settings, Sparkles } from 'lucide-react'
 import clsx from 'clsx'
 import { useEffect, useRef } from 'react'
 import { BloomieMascot, FloralBg } from './brand'
@@ -11,6 +11,7 @@ const NAV = [
   { to: '/app/meditate', label: 'Meditate', icon: Flower2 },
   { to: '/app/journal', label: 'Journal', icon: BookHeart },
   { to: '/app/exercises', label: 'Practice', icon: Sparkles },
+  { to: '/app/talk', label: 'Talk', icon: MessageCircleHeart },
   { to: '/app/progress', label: 'Progress', icon: BarChart3 },
 ]
 
@@ -87,14 +88,14 @@ export function AppShell() {
 
       {/* Mobile bottom nav */}
       <nav aria-label="Main" className="lg:hidden fixed bottom-0 inset-x-0 z-30 bg-white/90 backdrop-blur-md border-t border-border pb-[env(safe-area-inset-bottom)]">
-        <ul className="grid grid-cols-5">
+        <ul className="grid grid-cols-6">
           {NAV.map(n => (
             <li key={n.to}>
               <NavLink to={n.to} end={n.end}
-                className={({ isActive }) => clsx('flex flex-col items-center gap-0.5 py-2.5 text-[11px] font-semibold transition', isActive ? 'text-primary-strong' : 'text-muted-foreground')}>
+                className={({ isActive }) => clsx('flex flex-col items-center gap-0.5 py-2.5 text-[10.5px] font-semibold transition', isActive ? 'text-primary-strong' : 'text-muted-foreground')}>
                 {({ isActive }) => (
                   <>
-                    <span className={clsx('px-3.5 py-1 rounded-full transition', isActive && 'bg-muted')}><n.icon className="size-5" aria-hidden /></span>
+                    <span className={clsx('px-2.5 py-1 rounded-full transition', isActive && 'bg-muted')}><n.icon className="size-5" aria-hidden /></span>
                     {n.label}
                   </>
                 )}

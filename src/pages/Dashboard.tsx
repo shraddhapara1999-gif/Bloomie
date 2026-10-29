@@ -59,6 +59,7 @@ export function DashboardPage() {
         <div className="space-y-5">
           <AffirmationCard />
           <StreakCard />
+          <TalkShortcut />
           <JournalShortcut />
           <UpcomingReminders />
           <RecentActivity />
@@ -234,6 +235,19 @@ function StreakCard() {
         </div>
       </div>
     </Card>
+  )
+}
+
+function TalkShortcut() {
+  return (
+    <Link to="/app/talk" className="group flex items-center gap-3 rounded-2xl bg-card p-4 shadow-[var(--shadow-card)] hover:shadow-md transition">
+      <BloomieMascot size={44} className="shrink-0" />
+      <span className="flex-1 min-w-0">
+        <span className="block font-bold group-hover:underline">Talk to Bloomie</span>
+        <span className="block text-xs text-muted-foreground">Need to talk something through? Bloomie is here.</span>
+      </span>
+      <ChevronRight className="size-4 text-muted-foreground" aria-hidden />
+    </Link>
   )
 }
 

@@ -33,3 +33,4 @@ supabase/.temp/
 supabase/.branches/
 coverage/
 supabase/.cron-secret
+supabase/.env.secrets

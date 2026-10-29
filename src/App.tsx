@@ -26,6 +26,7 @@ const JournalDetailPage = lazy(() => import('./pages/Journal').then(m => ({ defa
 const RemindersPage = lazy(() => import('./pages/Reminders').then(m => ({ default: m.RemindersPage })))
 const ProgressPage = lazy(() => import('./pages/Progress').then(m => ({ default: m.ProgressPage })))
 const SettingsPage = lazy(() => import('./pages/Settings').then(m => ({ default: m.SettingsPage })))
+const TalkPage = lazy(() => import('./pages/Talk').then(m => ({ default: m.TalkPage })))
 
 const page = (el: ReactNode) => <Suspense fallback={<LoadingBlock label="Loading page…" />}>{el}</Suspense>
 
@@ -139,6 +140,7 @@ const router = createBrowserRouter([
             { path: 'reminders', element: page(<RemindersPage />) },
             { path: 'progress', element: page(<ProgressPage />) },
             { path: 'settings', element: page(<SettingsPage />) },
+            { path: 'talk', element: page(<TalkPage />) },
             { path: 'help', element: <InAppHelp /> },
           ],
         }],

@@ -30,7 +30,7 @@ export function HelplineList({ compact }: { compact?: boolean }) {
 }
 
 /** Shown when text may indicate someone is at risk. Never blocks saving. */
-export function SafetyDialog({ open, onClose }: { open: boolean; onClose: () => void }) {
+export function SafetyDialog({ open, onClose, context = 'entry' }: { open: boolean; onClose: () => void; context?: 'entry' | 'chat' }) {
   return (
     <Dialog open={open} onClose={onClose} title="You don't have to carry this alone"
       footer={<Button variant="soft" onClick={onClose}>Return to what I was doing</Button>}>
@@ -40,7 +40,9 @@ export function SafetyDialog({ open, onClose }: { open: boolean; onClose: () => 
         <p className="font-semibold">If you are in immediate danger, call <a href="tel:112" className="underline text-primary-strong">112</a> or go to the nearest emergency department.</p>
         <p>Talking to someone you trust — a friend, family member, or a trained counsellor — can help. These free services are available:</p>
         <HelplineList compact />
-        <p className="text-xs text-muted-foreground">Bloomie is an app and cannot respond to emergencies. Your entry has not been shared with anyone.</p>
+        <p className="text-xs text-muted-foreground">{context === 'chat'
+            ? 'Bloomie is an AI and cannot respond to emergencies or contact anyone for you. Please reach out to a person who can help.'
+            : 'Bloomie is an app and cannot respond to emergencies. Your entry has not been shared with anyone.'}</p>
       </div>
     </Dialog>
   )

@@ -238,3 +238,24 @@ describe('account deletion', () => {
     }
   })
 })
+
+describe('companion chat history', () => {
+  it('is private to its owner, append-only and deletable', async () => {
+    await as(db, asUser(alice), tx => tx.query(`insert into public.companion_messages (role, content) values ('user', 'I feel tense today')`))
+    const bobView = await as(db, asUser(bob), tx => tx.query('select * from public.companion_messages'))
+    expect(bobView.rows).toHaveLength(0)
+    await expect(as(db, asUser(bob), tx =>
+      tx.query(`insert into public.companion_messages (user_id, role, content) values ($1, 'assistant', 'spoof')`, [alice])))
+      .rejects.toThrow(/row-level security/)
+    const upd = await as(db, asUser(alice), tx => tx.query(`update public.companion_messages set content = 'edited'`))
+    expect(upd.affectedRows).toBe(0)
+    await expect(as(db, { role: 'anon' }, tx => tx.query('select * from public.companion_messages'))).rejects.toThrow(/permission denied/)
+    const del = await as(db, asUser(alice), tx => tx.query('delete from public.companion_messages'))
+    expect(del.affectedRows).toBe(1)
+  })
+
+  it('rejects invalid roles', async () => {
+    await expect(as(db, asUser(alice), tx =>
+      tx.query(`insert into public.companion_messages (role, content) values ('system', 'x')`))).rejects.toThrow(/check constraint/)
+  })
+})

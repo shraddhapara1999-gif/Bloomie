@@ -115,13 +115,14 @@ function AiSection() {
       <SectionTitle id="ai">Optional AI features</SectionTitle>
       <Card>
         <Switch checked={on} onChange={v => v ? setOpen(true) : update.mutate({ ai_opt_in: false, ai_opt_in_at: null }, { onSuccess: () => toast.success('AI features turned off') })}
-          label="Personalised journal prompts (AI)" description="Off by default. Bloomie works fully without AI." />
-        <Dialog open={open} onClose={() => setOpen(false)} title="Before you turn on AI prompts"
+          label="AI features: Talk to Bloomie & journal prompts" description="Off by default. Bloomie works fully without AI." />
+        <Dialog open={open} onClose={() => setOpen(false)} title="Before you turn on AI features"
           footer={<><Button variant="soft" onClick={() => setOpen(false)}>Not now</Button>
-            <Button loading={update.isPending} onClick={() => update.mutate({ ai_opt_in: true, ai_opt_in_at: new Date().toISOString() }, { onSuccess: () => { setOpen(false); toast.success('AI prompts enabled') } })}>I understand, turn on</Button></>}>
+            <Button loading={update.isPending} onClick={() => update.mutate({ ai_opt_in: true, ai_opt_in_at: new Date().toISOString() }, { onSuccess: () => { setOpen(false); toast.success('AI features enabled') } })}>I understand, turn on</Button></>}>
           <ul className="list-disc pl-5 space-y-1.5">
-            <li>When you ask for an AI prompt, your chosen focus areas and the feelings from your latest check-in are sent to our AI provider through our server.</li>
-            <li><strong>Your journal text is never sent.</strong></li>
+            <li><strong>Talk to Bloomie:</strong> messages you type in the chat are sent through our server to our AI provider (Anthropic) to create replies, and the conversation is saved privately to your account (you can delete it any time).</li>
+            <li><strong>AI journal prompts:</strong> only your focus areas and the feelings from your latest check-in are sent.</li>
+            <li><strong>Your journal entries and check-in notes are never sent.</strong></li>
             <li>The AI is not a therapist and does not diagnose or give medical advice. Responses may be imperfect.</li>
             <li>You can turn this off at any time.</li>
           </ul>

@@ -39,12 +39,22 @@ export async function createDb(dataDir?: string) {
   const asText = (v: string) => v
   const options = { extensions: { pgcrypto }, parsers: { 1082: asText, 1083: asText } }
   const db = dataDir ? new PGlite(dataDir, options) : new PGlite(options)
-  const ready = await db.query(`select to_regclass('public.profiles') as t`)
-  if ((ready.rows[0] as { t: string | null }).t) return db // persisted database already migrated
-  await db.exec(AUTH_STUB)
+  const ready = await db.query(`select to_regclass('auth.users') as auth, to_regclass('public.profiles') as profiles`)
+  const state = ready.rows[0] as { auth: string | null; profiles: string | null }
+  if (!state.auth) await db.exec(AUTH_STUB)
+
+  // Track applied migrations so a persisted dev database picks up new ones.
+  await db.exec(`create table if not exists auth.dev_migrations (name text primary key, applied_at timestamptz default now())`)
   const files = readdirSync(MIGRATIONS_DIR).filter(f => f.endsWith('.sql')).sort()
+  const applied = new Set((await db.query<{ name: string }>('select name from auth.dev_migrations')).rows.map(r => r.name))
+  if (state.profiles && applied.size === 0) {
+    // Database created before tracking existed: the original three migrations are already in place.
+    for (const f of files.slice(0, 3)) { await db.query('insert into auth.dev_migrations (name) values ($1)', [f]); applied.add(f) }
+  }
   for (const f of files) {
+    if (applied.has(f)) continue
     await db.exec(readFileSync(join(MIGRATIONS_DIR, f), 'utf8'))
+    await db.query('insert into auth.dev_migrations (name) values ($1)', [f])
   }
   return db
 }

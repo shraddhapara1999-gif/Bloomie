@@ -26,7 +26,7 @@ export async function fetchActivity(fromKey: string, toKey: string): Promise<Act
 
 const EXPORT_TABLES = [
   'profiles', 'mood_entries', 'journal_entries', 'meditation_history', 'exercise_history',
-  'reminders', 'reminder_deliveries', 'user_favorites', 'affirmation_history',
+  'reminders', 'reminder_deliveries', 'user_favorites', 'affirmation_history', 'companion_messages',
 ] as const
 
 /** Everything stored about the user (RLS limits each query to their own rows). */

@@ -395,6 +395,27 @@ async function handleFunctions(req: IncomingMessage, res: ServerResponse, url: U
     return send(res, 200, { ok: true })
   }
   if (name === 'ai-journal-prompt') return send(res, 503, { error: 'AI features are not configured on this server.', code: 'not_configured' })
+  if (name === 'ai-companion') {
+    // Local stand-in. Without DEV_FAKE_AI=true it behaves like an unconfigured server.
+    if (process.env.DEV_FAKE_AI !== 'true') return send(res, 503, { error: 'Talk to Bloomie is not set up on the server yet.', code: 'not_configured' })
+    if (who?.role !== 'authenticated') return send(res, 401, { error: 'Please sign in again.' })
+    const body = (await readBody(req)) as { message?: string } | undefined
+    const message = String(body?.message ?? '').trim()
+    if (!message) return send(res, 400, { error: 'Message is empty.' })
+    const optedIn = await asRole(who, async tx => (await tx.query<{ ai_opt_in: boolean }>('select ai_opt_in from public.profiles where id = $1', [who.sub])).rows[0]?.ai_opt_in)
+    if (!optedIn) return send(res, 403, { error: 'Turn on AI features to talk to Bloomie.', code: 'not_opted_in' })
+    const { mayIndicateCrisis } = await import('../supabase/functions/_shared/crisis.ts')
+    const flagged = mayIndicateCrisis(message)
+    await asRole(who, tx => tx.query(`insert into public.companion_messages (role, content, flagged) values ('user', $1, $2)`, [message, flagged]))
+    const reply = `[dev] Thanks for telling me that. It sounds like "${message.slice(0, 60)}" is on your mind. Would you like to try a short breathing exercise together?`
+    res.writeHead(200, { 'Content-Type': 'text/event-stream; charset=utf-8', 'Cache-Control': 'no-cache' })
+    const sse = (e: unknown) => res.write(`data: ${JSON.stringify(e)}\n\n`)
+    if (flagged) sse({ type: 'safety' })
+    for (const word of reply.split(/(?<= )/)) { sse({ type: 'text', text: word }); await new Promise(r => setTimeout(r, 25)) }
+    const id = await asRole(who, async tx => (await tx.query<{ id: string }>(`insert into public.companion_messages (role, content, flagged) values ('assistant', $1, $2) returning id`, [reply, flagged])).rows[0].id)
+    sse({ type: 'done', id })
+    return res.end()
+  }
   return send(res, 404, { error: `Function ${name} is not available in the local dev backend` })
 }
 

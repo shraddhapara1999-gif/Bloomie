@@ -8,6 +8,7 @@ if "%APP_URL%"=="" set "APP_URL=http://localhost:5173"
 
 call npx supabase functions deploy delete-account --use-api || exit /b 1
 call npx supabase functions deploy ai-journal-prompt --use-api || exit /b 1
+call npx supabase functions deploy ai-companion --use-api || exit /b 1
 call npx supabase functions deploy send-reminders --no-verify-jwt --use-api || exit /b 1
 call npx supabase functions deploy unsubscribe --no-verify-jwt --use-api || exit /b 1
 
